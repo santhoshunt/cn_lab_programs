@@ -3,26 +3,18 @@ import java.net.*;
 
 public class FileTransferClient {
     public static void main(String[] args) throws Exception {
-    
-        //Initialize socket
-        Socket socket = new Socket(InetAddress.getByName("localhost"), 5000);
-        byte[] contents = new byte[10000];
+        Socket socket = new Socket("localhost", 9999);
+        if (socket.isConnected())
+            System.out.println("Connection successful!");
+        FileOutputStream fout = new FileOutputStream("data2.txt");
+        DataInputStream din = new DataInputStream(socket.getInputStream());
+        int b;
+        while ((b = din.read()) != -1)
+            fout.write((char) b);
 
-        //Initialize the FileOutputStream to the output file's full path. 
-        FileOutputStream fos = new FileOutputStream("./data2.txt"); 
-        BufferedOutputStream bos = new BufferedOutputStream(fos); 
-        InputStream is = socket.getInputStream();
-        
-        //No of bytes read in one read() call 
-        int bytesRead = 0;
-        while ((bytesRead = is.read(contents)) != -1) 
-        bos.write(contents, 0, bytesRead);
-        bos.flush();
+        System.out.println("File transfer completed!");
+        // the rest of the code is optional
+        fout.close();
         socket.close();
-        System.out.println("File saved successfully!");
     }
 }
-
-
-
-
